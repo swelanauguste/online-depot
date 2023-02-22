@@ -1,0 +1,56 @@
+<div class="px-4 p-4 d-lg-flex shadow bg-light mb-5 sticky-top">
+
+    <div class="col mb-lg-0 mb-3">
+        <a class="text-decoration-none text-dark me-3"
+            href="/">Products</a>
+        <a class="text-decoration-none text-dark me-3"
+            href="#">Deals</a>
+        <a class="text-decoration-none text-dark me-3"
+            href="#">What's New</a>
+        <a class="text-decoration-none text-dark me-3"
+            href="#">Contact us</a>
+    </div>
+    <span class="col mb-lg-0 mb-4">
+        <form action=""
+            method="get">
+            <input type="text"
+                class="form-control rounded-pill"
+                name="q">
+        </form>
+    </span>
+
+    <div class="col mt-4 mt-lg-0 pb-lg-0 pb-3">
+        {% with total_items=cart|length %}
+        {% if total_items > 0 %}
+        <a class="text-decoration-none text-dark float-end"
+            href="{% url 'cart-detail' %}">
+            <button type="button"
+                class="bg-transparent border-0 position-relative">
+                <span class="material-symbols-outlined">
+                    shopping_cart
+                </span>
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{total_items}}
+                </span>
+            </button>
+        </a>
+        {% else %}
+        <div class=" float-end">
+            <button type="button"
+                class="bg-transparent border-0 position-relative">
+                <span class="material-symbols-outlined">
+                    shopping_cart
+                </span>
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{total_items}}
+                </span>
+            </button>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+    </div>
+
+</div>

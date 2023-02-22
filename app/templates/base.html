@@ -1,0 +1,87 @@
+{% load static %}
+{% load bootstrap5 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+    <title>
+
+        {% block head_title %}
+
+        {% endblock head_title %}
+
+    </title>
+  
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        html,
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .hide-me {
+            -webkit-animation: cssAnimation 5s forwards;
+            animation: cssAnimation 5s forwards;
+        }
+
+        @keyframes cssAnimation {
+            0% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @-webkit-keyframes cssAnimation {
+            0% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="small">
+    {% include 'navbar.html' %}
+    {% include 'messages.html' %}
+    <div class="">
+        {% block content %}
+        {% endblock content %}
+    </div>
+    {% include 'footer.html' %}
+
+
+</body>
+
+</html>

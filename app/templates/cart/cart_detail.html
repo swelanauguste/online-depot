@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load humanize %}
+
+{% block head_title %}
+Your Cart
+{% endblock head_title %}
+
+
+{% block content %}
+<div class="container">
+    <div class="d-">
+        <h2 class="float-start">Your Cart</h2>
+        {% with total_items=cart|length %}
+        {% if total_items > 0 %}
+        <h2 class="float-end">${{cart.get_total_price|intcomma}}</h2>
+        {% else %}
+        <h2 class="float-end">$0.00</h2>
+        {% endif %}
+        {% endwith %}
+    </div><br><br>
+    <hr>
+    <p class="text-end"><a title="continue shopping"
+            class="btn btn-sm btn-dark"
+            href="/">Continue shopping</a>
+        {% with total_items=cart|length %}
+        {% if total_items == 0 %}
+        {% else %}
+        <a title="checkout"
+            class="btn btn-sm btn-outline-dark"
+            href="{% url 'order-create' %}">Checkout</a>
+        {% endif %}
+        {% endwith %}
+    </p>
+    <br><br>
+    <div class="col-lg-6 mx-auto">
+        <table class="table border-white table-hover">
+            <tbody>
+                {% for item in cart %}
+                {% with product=item.product %}
+                <tr>
+                    <td>
+                        <img class="img-thumbnail"
+                            src="{{product.primary_image.url}}"
+                            width="120"
+                            alt="">
+                    </td>
+                    <td class="pt-5">{{product.product_name}}</td>
+                    <td class="pt-5">
+                            <form action="{% url 'add-to-cart' product.id %}"
+                                method="post">
+                                <div class="d-flex">
+                                    {% csrf_token %}
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.update }}
+                                </div>
+                            </form>
+                    </td>
+                    <td class="pt-5">${{item.total_price|intcomma}}</td>
+                    <td class="pt-5">
+                        <form action="{% url 'cart-remove' product.id %}"
+                            method="post">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="border-0 bg-transparent">
+                                <span
+                                    class="material-symbols-outlined text-danger">
+                                    delete
+                                </span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock content %}

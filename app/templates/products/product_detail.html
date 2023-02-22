@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+{{object.product_name}}
+{% endblock head_title %}
+
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div id="carouselExampleFade"
+            class="carousel slide carousel-fade col-lg-5 me-lg-3 rounded-4"
+            data-bs-touch="false">
+            <div class="carousel-inner rounded-4">
+                {% include 'products/carousel-images.html' %}
+            </div>
+            <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExampleFade"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"
+                    aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExampleFade"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon"
+                    aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div class="col-lg-5 p-5 border shadow rounded-4">
+            <h2 class="flex-wrap">{{object.product_name}}</h2>
+            <br>
+            <div class="container">
+                <p class="fs-1">${{object.price}}</p>
+                <p>{{object.description}}</p>
+                <div class="col-lg-2">
+
+                    <form action="{% url 'add-to-cart' product.id %}"
+                        method="post">
+                        {% csrf_token %}
+                        {{add_to_cart_form|crispy}}
+                        <input type="submit" class="btn btn-sm btn-outline-dark"
+                            value="Add to cart">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
