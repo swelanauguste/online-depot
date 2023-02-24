@@ -1,5 +1,8 @@
 import uuid
+from decimal import Decimal
 
+from coupons.models import Coupon
+from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import models
 from django.utils.text import slugify
 from products.models import Product
@@ -25,6 +28,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
+    coupon = models.ForeignKey(
+        Coupon, related_name="orders", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    discount = models.CharField(
+        max_length=3,
+        default=0,
+        validators=[MinLengthValidator(0), MaxLengthValidator(100)],
+    )
 
     class Meta:
         ordering = ("-created_at",)
@@ -46,7 +57,17 @@ class Order(models.Model):
         super(Order, self).save(*args, **kwargs)
 
     def get_total_cost(self):
+        total_cost = self.get_total_cost_before_discount()
+        return total_cost - self.get_discount()
+
+    def get_total_cost_before_discount(self):
         return sum(item.get_cost() for item in self.items.all())
+
+    def get_discount(self):
+        total_cost = self.get_total_cost_before_discount()
+        if self.discount:
+            return total_cost * ((Decimal(int(self.discount))) / Decimal(100))
+        return Decimal(0)
 
 
 class OrderItem(models.Model):

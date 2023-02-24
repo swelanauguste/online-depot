@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+Add
+{% endblock head_title %}
+
+
+{% block content %}
+<div class="container py-5">
+    <h1>Add</h1>
+    <hr>
+    <div class="row">
+        <div class="col-lg-5 mx-auto border p-5 rounded-3">
+            <form action="{% url 'product-create' %}"
+                method="post"
+                enctype="multipart/form-data"
+                id="image-form">
+                {% csrf_token %}
+                {{form|crispy}}
+            <div id="alert-box"></div>
+            <div class="text-end my-3">
+                <button class="btn btn-outline-dark visually-hidden"
+                    id="confirm-btn">Confirm</button>
+            </div>
+        </form>
+        </div>
+        <div class="col-lg-5">
+            <div id="image-box"></div>
+        </div>
+    </div>
+</div>
+<script>
+    const alertBox = document.getElementById('alert-box')
+    const imageBox = document.getElementById('image-box')
+    const imageForm = document.getElementById('image-form')
+    const confirmBtn = document.getElementById('confirm-btn')
+    const input = document.getElementById('id_primary_image')
+
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+    input.addEventListener('change', () => {
+        alertBox.innerHTML = ''
+        confirmBtn.classList.remove('visually-hidden')
+        const img_data = input.files[0]
+        const url = URL.createObjectURL(img_data)
+
+        imageBox.innerHTML = `<img src="${url}" id="image" width="100%">`
+        console.log($image)
+        var $image = $('#image')
+
+        $image.cropper({
+            aspectRatio: 16 / 9,
+            crop: function (event) {
+                console.log(event.detail.x);
+                console.log(event.detail.y);
+                console.log(event.detail.width);
+                console.log(event.detail.height);
+                console.log(event.detail.rotate);
+                console.log(event.detail.scaleX);
+                console.log(event.detail.scaleY);
+            }
+        });
+
+        // Get the Cropper.js instance after initialized
+        var cropper = $image.data('cropper');
+
+        confirmBtn.addEventListener('click', () => {
+            cropper.getCroppedCanvas().toBlob((blob) => {
+                console.log('confirmed')
+                const fd = new FormData();
+                fd.append('csrfmiddlewaretoken', csrf[0].value)
+                fd.append('file', blob, 'my-image.jpg');
+
+                $.ajax({
+                    type: 'POST',
+                    url: imageForm.action,
+                    enctype: 'multipart/form-data',
+                    data: fd,
+                    success: function (response) {
+                        console.log('success', response)
+                        alertBox.innerHTML = `<div class="alert alert-success" "role="alert">
+                            Saved
+                        </div>`
+                    },
+                    error: function(error){
+                        console.log('error', error)
+                        alertBox.innerHTML = `<div class="alert alert-danger" "role="alert">
+                        failed
+                    </div>`
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: true,
+                })
+            })
+        })
+    })
+</script>
+{% endblock content %}
+
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex maxime architecto
+facere error vitae placeat, sint est. Tempora quasi maxime ratione eveniet
+rerum?

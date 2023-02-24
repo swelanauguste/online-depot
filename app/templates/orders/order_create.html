@@ -30,11 +30,15 @@ Checkout
             </div>
         </div>
         <div class="col-lg-5 mx-auto border rounded-4 bg-dark text-light p-5">
-            <h3 class="text-light text-center">Your Order</h3>
+            <h5 class="text-light">Your Order Total: 
+                <span class="float-end">${{ cart.get_total_price_after_discount|intcomma }}</span>
+            </h5>
             <hr>
-            <p class="h4 text-center">Total: ${{ cart.get_total_price|intcomma }}</p>
+            {% if cart.coupon %}
+            <p class="text-end text-danger">"{{cart.coupon.code}}" -{{ cart.coupon.discount }}%</p>
+            {% endif %}
             <hr>
-            <br>
+            <br><br><br>
             <table class="table">
                 <tbody>
                     {% for item in cart %}
@@ -42,7 +46,7 @@ Checkout
                         <td class="text-light">{{item.quantity}} | 
                             {{item.product.product_name}}
                         </td>
-                        <td>${{item.total_price|intcomma}}</td>
+                        <td class="text-end">${{item.total_price|intcomma}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

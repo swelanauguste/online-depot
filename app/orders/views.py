@@ -1,13 +1,15 @@
 import weasyprint
 from cart.cart import Cart
 from django.conf import settings
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+
 from .forms import OrderCreateForm
 from .models import Order, OrderItem
 from .tasks import order_created
+
 
 @staff_member_required
 def admin_member_pdf(request, order_id):
@@ -23,11 +25,14 @@ def admin_member_pdf(request, order_id):
 
 def order_create(request):
     cart = Cart(request)
-
     if request.method == "POST":
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:
                 OrderItem.objects.create(
                     order=order,

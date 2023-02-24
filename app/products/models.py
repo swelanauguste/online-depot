@@ -1,9 +1,12 @@
 import uuid
 
+import cv2
+import matplotlib.pyplot as plt
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from PIL import Image
 
 Owner = settings.AUTH_USER_MODEL
 
@@ -51,6 +54,7 @@ class Tag(models.Model):
 
 class Product(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True)
+    primary_image = models.FileField(upload_to="primary_images", default="default.jpg")
     product_name = models.CharField(max_length=255, unique=True)
     product_uid = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True, blank=True, null=True
@@ -62,30 +66,46 @@ class Product(models.Model):
     tags = models.ManyToManyField(Tag, related_name="tag_list", blank=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    primary_image = models.FileField(upload_to="primary_images", default="default.jpg")
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ("product_name",)
+        ordering = ("-updated_at",)
         indexes = [
             models.Index(fields=["id", "slug"]),
             models.Index(fields=["product_name"]),
             models.Index(fields=["-created_at"]),
         ]
 
+    def __str__(self):
+        return self.product_name
+
     def get_absolute_url(self):
         return reverse("product-detail", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
+
         if not self.slug:
             # Newly created object, so set slug
             self.slug = slugify(self.product_uid)
-        super(Product, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return self.product_name
+        # if self.primary_image:  # check if image exists before resize
+        #     img = Image.open(self.primary_image.path)
+        #     # img = cv2.imread(self.primary_image.path)
+        #     # cv2.resize(img, (640, 425))
+        #     # img.save(self.primary_image.path)
+
+        #     # if img.height > img.width:
+        #     #     # img.rotate(90)
+        #     #     # if img.height > 1080 or img.width > 1920:
+        #     #         # new_height = 720
+        #     #         # new_width = int(new_height / img.height * img.width)
+        #     #         # new_width = 640
+        #     img.resize((640, 425))
+        #     img.save(self.primary_image.path)
+            super(Product, self).save(*args, **kwargs)
+            
 
 
 class ProductImage(models.Model):

@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from coupons.forms import CouponApplyForm
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from products.models import Product
+
 from .cart import Cart
 from .forms import CartAddProductForm, CartUpdateProductForm
 
@@ -14,6 +16,7 @@ def cart_add(request, product_id):
         cd = form.cleaned_data
         cart.add(product=product, quantity=cd["quantity"], update_quantity=cd["update"])
     return redirect("cart-detail")
+
 
 @require_POST
 def cart_remove(request, product_id):
@@ -29,6 +32,6 @@ def cart_detail(request):
         item["update_quantity_form"] = CartUpdateProductForm(
             initial={"quantity": item["quantity"], "update": True}
         )
-    return render(request, "cart/cart_detail.html", {"cart": cart})
-
-
+    coupon_apply_form = CouponApplyForm()
+    context = {"cart": cart, "coupon_apply_form": coupon_apply_form}
+    return render(request, "cart/cart_detail.html", context)

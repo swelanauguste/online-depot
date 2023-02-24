@@ -11,16 +11,76 @@ Your Cart
 
 {% block content %}
 <div class="container">
-    <div class="d-">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <table class="table table-hover">
+                <tbody>
+                    <h3>Your Cart</h3>
+                    {% with total_items=cart|length %}
+                    {% if total_items > 0 %}
+
+                    <tr>
+                        {% if cart.coupon %}
+                        <td>Code</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Subtotal</td>
+                        <td class="text-end">${{cart.get_total_price|intcomma}}</td>
+                    </tr>
+                    <tr class="text-danger">
+                        <td>"{{cart.coupon.code}}" coupon
+                            ({{cart.coupon.discount}}% off)</td>
+                        <td class="text-end"> - ${{ cart.get_discount|intcomma|floatformat:2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td class="text-end  fs-4">${{cart.get_total_price_after_discount|intcomma}}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% else %}
+                    <tr>
+                        <td>$0.00</td>
+                    </tr>
+                    {% endif %}
+                    {% endwith %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="col-lg-3">
+            <h3>Apply Coupon</h3>
+            <hr>
+            <p>
+            <form class=""
+                action="{% url 'coupon-apply' %}"
+                method="post">
+                {% csrf_token %}
+                {{coupon_apply_form|crispy}}
+                <input type="submit"
+                    value="Apply"
+                    class="btn btn-outline-dark btn-sm float-lg-end">
+            </form>
+            </p>
+        </div>
+    </div>
+    <!-- <div class="">
         <h2 class="float-start">Your Cart</h2>
         {% with total_items=cart|length %}
         {% if total_items > 0 %}
-        <h2 class="float-end">${{cart.get_total_price|intcomma}}</h2>
+        <div class="d-flex">
+            <h2 class="float-end">${{cart.get_total_price|intcomma}}</h2><br>
+            <p class="">${{cart.get_total_price|intcomma}}</p>
+        </div>
         {% else %}
         <h2 class="float-end">$0.00</h2>
         {% endif %}
         {% endwith %}
-    </div><br><br>
+    </div> -->
+    <br><br>
     <hr>
     <p class="text-end"><a title="continue shopping"
             class="btn btn-sm btn-dark"
@@ -49,14 +109,14 @@ Your Cart
                     </td>
                     <td class="pt-5">{{product.product_name}}</td>
                     <td class="pt-5">
-                            <form action="{% url 'add-to-cart' product.id %}"
-                                method="post">
-                                <div class="d-flex">
-                                    {% csrf_token %}
-                                    {{ item.update_quantity_form.quantity }}
-                                    {{ item.update_quantity_form.update }}
-                                </div>
-                            </form>
+                        <form action="{% url 'add-to-cart' product.id %}"
+                            method="post">
+                            <div class="d-flex">
+                                {% csrf_token %}
+                                {{ item.update_quantity_form.quantity }}
+                                {{ item.update_quantity_form.update }}
+                            </div>
+                        </form>
                     </td>
                     <td class="pt-5">${{item.total_price|intcomma}}</td>
                     <td class="pt-5">
