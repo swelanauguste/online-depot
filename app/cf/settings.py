@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-qzqcbtz_+_*)2jmmbf-xgnf&i!m%xu(7#wh&3s7&l3mn%9089#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "cart",
     "orders",
     "coupons",
+    "minio_storage",
 ]
 
 SITE_ID = 1
@@ -178,4 +179,18 @@ CART_SESSION_ID = "cart"
 
 # CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 # CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
-CELERY_BROKER_URL = 'amqp://10.10.10.101:5672'
+CELERY_BROKER_URL = "amqp://10.10.10.101:5672"
+
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+MINIO_STORAGE_ENDPOINT = 'minio.kingship.info'
+MINIO_STORAGE_ACCESS_KEY = 'a6BYHdNBHjcvpaMm'
+MINIO_STORAGE_SECRET_KEY = 'wbotFf9IzTg1veTGb0fxfAu7pfp7VPUw'
+MINIO_STORAGE_USE_HTTPS = True
+MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
+MINIO_STORAGE_MEDIA_BUCKET_NAME = 'online-depot1-mediafiles'
+MINIO_STORAGE_MEDIA_BACKUP_BUCKET = 'Recycle Bin'
+MINIO_STORAGE_MEDIA_BACKUP_FORMAT = '%c/'
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_STATIC_BUCKET_NAME = 'online-depot11-staticfiles'
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True

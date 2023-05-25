@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./app
+    command: sh -c "gunicorn cf.wsgi:application --bind 0.0.0.0:8011 && celery -A cf workers -l info"
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - 8011:8011
+    env_file:
+      - ./.env
+    # network_mode: "host"        
+    restart: unless-stopped
+  #   depends_on:
+  #     - db
+  # db:
+  #   # network_mode: "host"        
+  #   image: postgres:13.0-alpine
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     - POSTGRES_USER=williams
+  #     - POSTGRES_PASSWORD=williams
+  #     - POSTGRES_DB=williams
+  #   restart: always
+
+# volumes:
+#   postgres_data:

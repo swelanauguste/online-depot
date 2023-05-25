@@ -13,7 +13,7 @@ Owner = settings.AUTH_USER_MODEL
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ("category_name",)
@@ -85,27 +85,10 @@ class Product(models.Model):
         return reverse("product-detail", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
-
         if not self.slug:
             # Newly created object, so set slug
             self.slug = slugify(self.product_uid)
-
-        # if self.primary_image:  # check if image exists before resize
-        #     img = Image.open(self.primary_image.path)
-        #     # img = cv2.imread(self.primary_image.path)
-        #     # cv2.resize(img, (640, 425))
-        #     # img.save(self.primary_image.path)
-
-        #     # if img.height > img.width:
-        #     #     # img.rotate(90)
-        #     #     # if img.height > 1080 or img.width > 1920:
-        #     #         # new_height = 720
-        #     #         # new_width = int(new_height / img.height * img.width)
-        #     #         # new_width = 640
-        #     img.resize((640, 425))
-        #     img.save(self.primary_image.path)
-            super(Product, self).save(*args, **kwargs)
-            
+        super(Product, self).save(*args, **kwargs)
 
 
 class ProductImage(models.Model):

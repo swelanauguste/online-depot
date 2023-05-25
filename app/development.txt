@@ -1,0 +1,4 @@
+black==23.1.0
+Faker==16.7.0
+
+-r requirements.txt
