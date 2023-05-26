@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.9.6-alpine
+FROM ubuntu:latest
 
 # set work directory
 WORKDIR /usr/src/app
@@ -10,11 +10,9 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 # RUN apk update
-RUN apk update \
-    && apk add pango libffi
+RUN apt update
+    # && apk add pango libffi
 # && apk add postgresql-dev gcc python3-dev musl-dev
-
-RUN export LDFLAGS="-L/usr/local/opt/libffi/lib"  && export CPPFLAGS="-I/usr/local/opt/libffi/include"
 
 # install dependencies
 RUN pip install --upgrade pip
