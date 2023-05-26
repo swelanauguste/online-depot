@@ -12,11 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-qzqcbtz_+_*)2jmmbf-xgnf&i!m%xu(7#wh&3s7&l3mn%9089#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["online-depot.kingship.info"]
 
-# CSRF_TRUSTED_ORIGINS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://online-depot.kingship.info"]
 
 X_FRAME_OPTIONS = 'ALLOW-FROM= "*"'
 
@@ -33,10 +33,10 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.contrib.sites",
     "crispy_forms",
+    "crispy_bootstrap5",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "crispy_bootstrap5",
     "bootstrap5",
     "django_filters",
     "users",
@@ -147,9 +147,18 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Email_settings
 #######################
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = "emails"
+# # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+# EMAIL_FILE_PATH = "emails"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = os.environ.get("EMAIL")
+EMAIL_HOST_PASSWORD = os.environ.get("PASS")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
 
 # Authentication settings for allauth
 
@@ -179,7 +188,7 @@ CART_SESSION_ID = "cart"
 
 # CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 # CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
-CELERY_BROKER_URL = "amqp://10.10.10.101:5672"
+CELERY_BROKER_URL = "amqp://172.29.0.3:5672"
 
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"

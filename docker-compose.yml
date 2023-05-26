@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: ./app
-    command: sh -c "gunicorn cf.wsgi:application --bind 0.0.0.0:8011 && celery -A cf workers -l info"
+    command: gunicorn cf.wsgi:application --bind 0.0.0.0:8011
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -12,6 +12,9 @@ services:
       - ./.env
     # network_mode: "host"        
     restart: unless-stopped
+networks:
+  default:
+    driver: online-depot_default
   #   depends_on:
   #     - db
   # db:

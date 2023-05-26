@@ -1,6 +1,6 @@
 import uuid
 
-import cv2
+# import cv2
 import matplotlib.pyplot as plt
 from django.conf import settings
 from django.db import models

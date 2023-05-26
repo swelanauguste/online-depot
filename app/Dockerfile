@@ -1,5 +1,5 @@
 # pull official base image
-FROM ubuntu:latest
+FROM python:3.11-slim
 
 # set work directory
 WORKDIR /usr/src/app
@@ -10,12 +10,21 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 # RUN apk update
-RUN apt update
-    # && apk add pango libffi
+RUN apt update 
+# RUN apt install -y virtualenv
+# RUN virtualenv venv
+RUN apt install -y python3-pip python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0
+RUN apt install -y python3-pip libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libffi-dev libjpeg-dev libopenjp2-7-dev
+
+    # && apk add python3-opencv
 # && apk add postgresql-dev gcc python3-dev musl-dev
 
+RUN export LDFLAGS="-L/usr/local/opt/libffi/lib"  && export CPPFLAGS="-I/usr/local/opt/libffi/include"
+
 # install dependencies
-RUN pip install --upgrade pip
+RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install opencv-python numpy scipy
 COPY ./development.txt .
 COPY ./requirements.txt .
 RUN pip install -r development.txt

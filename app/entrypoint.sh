@@ -11,6 +11,7 @@
 #     echo "PostgreSQL started"
 # fi
 # python manage.py flush --noinput
+
 python manage.py migrate
 python manage.py makemigrations
 python manage.py migrate
@@ -19,9 +20,9 @@ python manage.py createsuperuser --username kingship --email kingship.lc@gmail.c
 # python manage.py createsuperuser --username supervisor --email supervisor@gmail.com --noinput
 # python manage.py createsuperuser --username user --email user@gmail.com --noinput
 
-# python manage.py add_multiplier
-# python manage.py add_dept
-# python manage.py add_job_titles
+python manage.py add_location_list
+python manage.py add_categories
+python manage.py add_tag_list
 # python manage.py add_fake_employees
 # python manage.py add_locations
 # python manage.py add_work
@@ -29,5 +30,7 @@ python manage.py createsuperuser --username kingship --email kingship.lc@gmail.c
 
 
 python manage.py collectstatic --noinput
+
+celery -A cf worker -l info --detach
 
 exec "$@"
